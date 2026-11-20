@@ -20,12 +20,31 @@
 
 ## 启动
 
-服务依赖 MySQL、Redis 和 RocketMQ。准备本地依赖服务后，在仓库根目录运行：
+服务依赖 MySQL、Redis 和 RocketMQ。首次启动前，在仓库根目录复制环境变量模板并启动本地依赖：
+
+```powershell
+Copy-Item .env.example .env
+docker compose up -d
+```
+
+Docker Compose 仅用于本地开发环境。确认 MySQL、Redis 和 RocketMQ 容器就绪后，再运行：
 
 ```powershell
 mvn -pl backend spring-boot:run
 ```
 
+前端开发服务器：
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+本地服务默认使用 `.env.example` 中的数据库账号；真实密码、支付密钥和生产配置不得提交到仓库。当前 RocketMQ Compose 为单节点开发配置，不代表生产高可用或 2,000 QPS 压测验收结果。
+
 健康检查：`GET /api/health`。
+
+需要本地运营管理员时，在启动后端前设置 `APP_BOOTSTRAP_ADMIN_USERNAME` 和至少 10 位的 `APP_BOOTSTRAP_ADMIN_PASSWORD` 环境变量。首次启动会创建该管理员；密码不要写入仓库或提交到 `.env.example`。
 
 详细架构及业务规则见 [`docs/智享生活平台-系统设计文档.md`](docs/智享生活平台-系统设计文档.md)。
