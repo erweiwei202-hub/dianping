@@ -49,6 +49,65 @@ export interface ReviewSummaryDto {
   ratingDistribution: Record<number, number>
 }
 
+export interface CampaignDto {
+  id: number
+  merchantId: number
+  name: string
+  description: string
+  totalStock: number
+  availableStock: number
+  priceMinor: number
+  startsAt: string
+  endsAt: string
+  status: 'DRAFT' | 'ACTIVE' | 'ENDED' | 'OFFLINE' | string
+}
+
+export interface SeckillAcceptedDto {
+  requestId: string
+  status: string
+}
+
+export interface SeckillRequestDto {
+  requestId: string
+  campaignId: number
+  status: 'ACCEPTED' | 'PROCESSING' | 'ORDER_CREATED' | 'REJECTED' | 'FAILED' | string
+  failureReason: string | null
+  orderId: number | null
+  orderStatus: string | null
+}
+
+export interface CouponOrderDto {
+  id: number
+  campaignId: number
+  amountMinor: number
+  status: 'PENDING_PAYMENT' | 'PAID' | 'CLOSED' | 'REDEEMED' | string
+  paymentExpiresAt: string | null
+  createdAt: string
+}
+
+export interface WalletBalanceDto {
+  availableBalanceFen: number
+  frozenBalanceFen: number
+}
+
+export interface WalletLedgerItemDto {
+  id: number
+  type: string
+  businessId: string
+  amountFen: number
+  balanceAfterFen: number
+  description: string
+  createdAt: string
+}
+
+export interface WalletLedgerPageDto {
+  items: WalletLedgerItemDto[]
+  page: number
+  size: number
+  totalItems: number
+  totalPages: number
+}
+
 interface ApiEnvelope<T> {
   success?: boolean
   data?: T
@@ -138,4 +197,18 @@ export const merchantApi = {
   deleteReview: (reviewId: number) => request<null>(`/api/reviews/${reviewId}`, { method: 'DELETE' }),
   like: (reviewId: number) => request<{ reviewId: number; likeCount: number; likedByCurrentUser: boolean }>(`/api/reviews/${reviewId}/likes`, { method: 'POST' }),
   unlike: (reviewId: number) => request<{ reviewId: number; likeCount: number; likedByCurrentUser: boolean }>(`/api/reviews/${reviewId}/likes`, { method: 'DELETE' }),
+}
+
+export const couponApi = {
+  listCampaigns: (page = 0, size = 20) => request<CampaignDto[]>(`/api/coupons/activities?page=${page}&size=${size}`),
+  campaignDetail: (campaignId: number) => request<CampaignDto>(`/api/coupons/activities/${campaignId}`),
+  submitSeckill: (campaignId: number) => request<SeckillAcceptedDto>(`/api/coupons/activities/${campaignId}/seckill`, { method: 'POST' }),
+  seckillRequest: (requestId: string) => request<SeckillRequestDto>(`/api/seckill-requests/${encodeURIComponent(requestId)}`),
+  myOrders: (page = 0, size = 20) => request<CouponOrderDto[]>(`/api/orders?page=${page}&size=${size}`),
+  payWithBalance: (orderId: number) => request<CouponOrderDto>(`/api/orders/${orderId}/payments`, { method: 'POST' }),
+}
+
+export const walletApi = {
+  balance: () => request<WalletBalanceDto>('/api/wallet'),
+  ledger: (page = 0, size = 20) => request<WalletLedgerPageDto>(`/api/wallet/ledger?page=${page}&size=${size}`),
 }
