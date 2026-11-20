@@ -352,7 +352,7 @@ watch(() => session.user?.id, () => {
     </section>
 
     <section id="deals" class="section">
-      <div class="section-heading"><div><p class="section-kicker">GOOD THINGS, RIGHT NOW</p><h2>正在发生的好优惠</h2><p>活动库存实时读取；抢购会排队处理并返回可查询的请求编号。</p></div><RouterLink class="text-link" to="/account">查看我的订单　↗</RouterLink></div>
+      <div class="section-heading"><div><p class="section-kicker">GOOD THINGS, RIGHT NOW</p><h2>正在发生的好优惠</h2><p>活动信息由服务端提供；抢购会排队处理并返回可查询的请求编号。</p></div><RouterLink class="text-link" to="/account">查看我的订单　↗</RouterLink></div>
       <div v-if="campaignLoading && campaigns.length === 0" class="empty-state">正在加载优惠活动…</div>
       <div v-else-if="campaignError && campaigns.length === 0" class="empty-state campaign-error"><p>{{ campaignError }}</p><button class="outline-button" type="button" @click="loadCampaigns()">重试</button></div>
       <div v-else-if="campaigns.length === 0" class="empty-state">目前没有进行中的优惠活动，稍后再来看看。</div>
@@ -432,7 +432,7 @@ watch(() => session.user?.id, () => {
           <button v-if="seckillRequestId && !seckillBusy && seckillStatus !== 'ORDER_CREATED' && seckillStatus !== 'REJECTED' && seckillStatus !== 'FAILED'" class="text-link continue-poll" type="button" @click="pollSeckill(seckillRequestId)">继续查询结果</button>
           <RouterLink v-if="seckillStatus === 'ORDER_CREATED'" class="account-order-link" to="/account" @click="campaignDetailOpen = false">前往账户查看订单并支付　↗</RouterLink>
         </div>
-        <p class="campaign-note">抢购请求受理不代表订单已创建；请等待状态更新。订单创建后需在账户页使用可用余额支付。</p>
+        <p class="campaign-note">页面库存是服务端展示值，订单消费者处理期间可能短暂延迟。抢购请求受理不代表订单已创建；订单创建后需在账户页使用可用余额支付。</p>
       </template>
     </section></div>
     <div v-if="toast" class="toast" role="status">{{ toast }}</div>

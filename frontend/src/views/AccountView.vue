@@ -116,7 +116,7 @@ async function payOrder(order: CouponOrderDto) {
   } catch (error) {
     if (!handleAuthError(error)) {
       const message = error instanceof ApiError && error.status === 402
-        ? '余额不足，请充值后再支付。充值暂未开放。'
+        ? '余额不足，当前无法完成支付；充值功能尚未开放。'
         : error instanceof ApiError ? error.message : '支付请求失败，请稍后重试。'
       paymentErrors.value = { ...paymentErrors.value, [order.id]: message }
     }
