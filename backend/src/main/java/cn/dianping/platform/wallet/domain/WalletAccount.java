@@ -40,6 +40,18 @@ public class WalletAccount {
     protected WalletAccount() {
     }
 
+    public WalletAccount(long userId) {
+        if (userId <= 0) {
+            throw new IllegalArgumentException("userId must be positive");
+        }
+        this.userId = userId;
+        this.availableBalanceFen = 0;
+        this.frozenBalanceFen = 0;
+        this.version = 0;
+        this.createdAt = Instant.now();
+        this.updatedAt = this.createdAt;
+    }
+
     public long getUserId() {
         return userId;
     }

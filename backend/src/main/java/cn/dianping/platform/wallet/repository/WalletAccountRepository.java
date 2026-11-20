@@ -13,6 +13,8 @@ public interface WalletAccountRepository extends JpaRepository<WalletAccount, Lo
 
     Optional<WalletAccount> findByUserId(long userId);
 
+    boolean existsByUserId(long userId);
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select account from WalletAccount account where account.userId = :userId")
     Optional<WalletAccount> findByUserIdForUpdate(@Param("userId") long userId);
