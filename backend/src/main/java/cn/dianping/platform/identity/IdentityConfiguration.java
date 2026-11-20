@@ -58,6 +58,7 @@ public class IdentityConfiguration {
                         .requestMatchers("/api/health", "/api/health/**", "/actuator/health", "/actuator/health/**").permitAll()
                         .requestMatchers("/api/auth/csrf", "/api/auth/register", "/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/merchants", "/api/merchants/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/coupons/activities", "/api/coupons/activities/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/auth/logout", "/api/auth/me").authenticated()

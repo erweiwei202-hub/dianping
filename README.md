@@ -45,4 +45,6 @@ npm run dev
 
 健康检查：`GET /api/health`。
 
+需要本地运营管理员时，在启动后端前设置 `APP_BOOTSTRAP_ADMIN_USERNAME` 和至少 10 位的 `APP_BOOTSTRAP_ADMIN_PASSWORD` 环境变量。首次启动会创建该管理员；密码不要写入仓库或提交到 `.env.example`。
+
 详细架构及业务规则见 [`docs/智享生活平台-系统设计文档.md`](docs/智享生活平台-系统设计文档.md)。
