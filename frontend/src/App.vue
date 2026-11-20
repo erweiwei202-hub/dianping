@@ -33,6 +33,7 @@ async function logout() {
       </nav>
       <div class="header-actions">
         <RouterLink class="admin-link" to="/admin">商户管理</RouterLink>
+        <RouterLink v-if="session.user" class="account-link" to="/account">账户</RouterLink>
         <button v-if="session.user" class="account-button" type="button" @click="logout">{{ session.user.displayName }} · 退出</button>
         <button v-else class="avatar-button" type="button" aria-label="登录或注册" @click="session.openAuthDialog()">登录</button>
       </div>
@@ -41,7 +42,7 @@ async function logout() {
     <footer v-if="!isAdmin" class="site-footer">
       <div class="footer-brand"><span class="brand-mark small">享</span><strong>智享生活</strong></div>
       <span>发现附近好店，把每一次消费都变成好体验。</span>
-      <span class="footer-note">商户与评价读取服务端 · 优惠活动为界面预览</span>
+      <span class="footer-note">商户、评价、活动、订单与余额读取服务端 · 充值暂未开放</span>
     </footer>
     <AuthDialog />
   </div>
@@ -50,4 +51,7 @@ async function logout() {
 <style scoped>
 .account-button{border:0;background:transparent;color:#59666e;font-size:12px;font-weight:600}
 .account-button:hover{color:#e85d4a}
+.account-link{color:#59666e;font-size:12px;font-weight:600}
+.account-link:hover{color:#e85d4a}
+@media(max-width:640px){.account-link{font-size:11px}.account-button{font-size:10px}}
 </style>
