@@ -1,9 +1,22 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { RouterLink, RouterView, useRoute } from 'vue-router'
+import AuthDialog from './components/AuthDialog.vue'
+import { useSessionStore } from './stores/session'
 
 const route = useRoute()
+const session = useSessionStore()
 const isAdmin = computed(() => route.path.startsWith('/admin'))
+
+onMounted(() => { void session.loadCurrentUser() })
+
+async function logout() {
+  try {
+    await session.logout()
+  } catch {
+    session.user = null
+  }
+}
 </script>
 
 <template>
@@ -20,14 +33,21 @@ const isAdmin = computed(() => route.path.startsWith('/admin'))
       </nav>
       <div class="header-actions">
         <RouterLink class="admin-link" to="/admin">商户管理</RouterLink>
-        <button class="avatar-button" type="button" aria-label="登录或个人中心">林</button>
+        <button v-if="session.user" class="account-button" type="button" @click="logout">{{ session.user.displayName }} · 退出</button>
+        <button v-else class="avatar-button" type="button" aria-label="登录或注册" @click="session.openAuthDialog()">登录</button>
       </div>
     </header>
     <RouterView />
     <footer v-if="!isAdmin" class="site-footer">
       <div class="footer-brand"><span class="brand-mark small">享</span><strong>智享生活</strong></div>
       <span>发现附近好店，把每一次消费都变成好体验。</span>
-      <span class="footer-note">界面预览 · 数据尚未连接服务端</span>
+      <span class="footer-note">商户与评价读取服务端 · 优惠活动为界面预览</span>
     </footer>
+    <AuthDialog />
   </div>
 </template>
+
+<style scoped>
+.account-button{border:0;background:transparent;color:#59666e;font-size:12px;font-weight:600}
+.account-button:hover{color:#e85d4a}
+</style>
