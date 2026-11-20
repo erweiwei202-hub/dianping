@@ -1,0 +1,65 @@
+services:
+  mysql:
+    image: mysql:8.4.13
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: dianping
+      MYSQL_USER: ${DB_USERNAME:-dianping}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-dianping}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-local-root-password}
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$${MYSQL_ROOT_PASSWORD} --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  redis:
+    image: redis:7.2.17
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  namesrv:
+    image: apache/rocketmq:5.3.2
+    restart: unless-stopped
+    command: ["sh", "mqnamesrv"]
+    ports:
+      - "9876:9876"
+    volumes:
+      - rocketmq-logs:/home/rocketmq/logs
+
+  broker:
+    image: apache/rocketmq:5.3.2
+    restart: unless-stopped
+    depends_on:
+      - namesrv
+    environment:
+      NAMESRV_ADDR: namesrv:9876
+    command: ["sh", "mqbroker", "-c", "/home/rocketmq/rocketmq-5.3.2/conf/broker.conf"]
+    ports:
+      - "10909:10909"
+      - "10911:10911"
+      - "10912:10912"
+    volumes:
+      - ./infra/rocketmq/broker.conf:/home/rocketmq/rocketmq-5.3.2/conf/broker.conf:ro
+      - rocketmq-store:/home/rocketmq/store
+      - rocketmq-logs:/home/rocketmq/logs
+
+volumes:
+  mysql-data:
+  redis-data:
+  rocketmq-store:
+  rocketmq-logs:
